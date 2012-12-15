@@ -4,12 +4,10 @@
 function Room(id, name) {
  this.id = id;
  this.name = name;
+ this.clients = [];
 }
 
 Room.prototype = {
-  name : undefined,
-  id : undefined,
-  clients : [];
   sendMessage : sendMessage,
   addClient : addClient,
   removeClient : removeClient,
@@ -27,13 +25,13 @@ Rooms.prototype = {
   addRoom: addRoom
 };
 
-function Client(name) {
+function Client(name, socket) {
  this.name = name;
  this.Id = clients.ids + 1;
+ this.socket = socket;
 }
 
 Client.prototype = {
-  socket : undefined,
   createClient: createClient
 };
 

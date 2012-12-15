@@ -38,7 +38,7 @@ Client.prototype = {
 function Clients () {
  this.ids = []; 
 }
-clients = {
+Clients.prototype = {
   newClient: newClient,
   deleteClient: deleteClient
 };

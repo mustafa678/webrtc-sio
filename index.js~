@@ -1,16 +1,24 @@
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-
+var express = require('express')
+  , app = express();
 /* serve static files */
 app.configure(function(){
   app.use('/media', express.static(__dirname + '/media'));
   app.use('/js', express.static(__dirname + '/js'));
-  app.use(express.static(__dirname + '/public'));
+  app.use(express.bodyParser());
+  app.use('/public',express.static(__dirname + '/public'));
 });
 
-app.listen(3000);
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
+
+
+
+
+//app.listen(3000);
+
+// app.get('/', function (req, res) {
+//   res.sendfile(__dirname + '/public/index.html');
+// });
 
 io.sockets.on('connection', function(socket) {
   socket.emit('news', { hello: 'world'});
