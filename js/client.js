@@ -1,5 +1,66 @@
-var socket = io.connect();
-socket.on('news', function (data) {
-  console.log(data);
-  socket.emit('my other event', { my: 'data' });
+$(function() {
+  
+  var socket = io.connect();
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+  
+  /* jquery selectors */
+  var roomcrt = $('#roomcrt');
+  var roomname = $('#roomname');
+  var roomlist = $('#roomlist');
+  var roomslinks = $("[id^=roomlist] > a");
+  
+  var username = $('#username');
+  var usercrt = $('#createusr');
+  var chatroom = $('#chatr');
+  var tchat = $('#tchat');
+  
+  var room = '';
+  var user
+  
+  usercrt.click(function() {
+    user = username.val();
+    socket.emit('create user', { name: username.val()});
+  });
+  
+  roomslinks.live("click", function(event) {
+    room = $(this).attr("href");
+    socket.emit('join room', { room: room});
+    var head = $('#headbar').html();
+    head = '<h1>' +room + '</h1>';
+    $('#headbar').html(head);
+    event.preventDefault();
+    
+  });
+  
+  $('#send').on("click", function(){
+    var message = $('#mess').val();
+    socket.emit('chat message', { client : user , 'message' : message, room: room });
+    var htmlt = '';
+    $('#mess').val('');
+    
+  });
+  
+  
+  
+  
+  roomcrt.click(function(){
+    socket.emit('create room', { name: roomname.val()});
+  });
+  
+  socket.on('new room', function(data){
+//     alert('new room emited: ' + data.name);
+    roomlist.append('<li id="roomlist '+ data.name+ '"><a href="'+ data.name + '">' + data.name + '</a></li>');
+  });
+  
+  socket.on('chat message', function(data){
+    var html = tchat.html();
+    html += '<div class="line"><b>'+data.sender+'</b> : '+data.msg+'</div>'
+     tchat.html(html);
+  });
+  
+  
+  
 });
